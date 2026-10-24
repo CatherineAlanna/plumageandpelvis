@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Seal } from "@/components/Seal";
-import { VideoDiptych } from "@/components/VideoDiptych";
-import { ExhibitCard, ReservedCard } from "@/components/ExhibitCard";
-import { catalogNumber, exhibits, featuredExhibit, reservedSlots } from "@/data/exhibits";
+import { ComparativeTheater } from "@/components/ComparativeTheater";
+import { ExhibitCard } from "@/components/ExhibitCard";
+import { catalogNumber, exhibitNumber, exhibits, featuredExhibit } from "@/data/exhibits";
 
 export default function HomePage() {
   const featured = featuredExhibit();
@@ -25,7 +25,7 @@ export default function HomePage() {
             <div className="hero-actions">
               <Link href="/archive" className="btn btn-primary">Enter the Archive</Link>
               <Link href={`/archive/${featured.slug}`} className="btn">
-                View Exhibit {String(featured.number).padStart(3, "0")}
+                View Exhibit {exhibitNumber(featured.number)}
               </Link>
             </div>
           </div>
@@ -35,22 +35,23 @@ export default function HomePage() {
 
       <section className="section section-alt" aria-labelledby="featured-title">
         <div className="container featured">
-          <VideoDiptych exhibit={featured} compact />
+          <ComparativeTheater exhibit={featured} compact />
           <div>
             <div className="meta-row">
               <span className="eyebrow">Featured · {catalogNumber(featured.number)}</span>
-              {featured.status === "draft" && <span className="status-badge">Draft · footage pending</span>}
+              {featured.status === "candidate" && <span className="status-badge">Candidate pairing</span>}
             </div>
             <h2 id="featured-title" className="display section-title">{featured.title}</h2>
             <p className="mono muted" style={{ margin: "6px 0 0" }}>
-              <i>{featured.human.fictionalClassification}</i> (fictional) × avian counterpart under review
+              <i>{featured.bird.scientificName}</i> × {featured.human.performer}
             </p>
-            <ul className="observations" aria-label="Matching observations">
-              {featured.comparisonRows.slice(0, 3).map((r) => (
-                <li key={r.human}>
-                  <span>{r.human}</span>
-                  <span className="vs" aria-hidden="true">≈</span>
+            <p style={{ margin: "18px 0 0" }}>{featured.description}</p>
+            <ul className="observations" aria-label="Comparative ledger excerpt">
+              {featured.ledger.slice(0, 3).map((r) => (
+                <li key={r.dimension}>
                   <span>{r.avian}</span>
+                  <span className="vs" aria-hidden="true">≈</span>
+                  <span>{r.human}</span>
                 </li>
               ))}
             </ul>
@@ -71,9 +72,6 @@ export default function HomePage() {
           <div className="card-grid">
             {exhibits.map((e) => (
               <ExhibitCard key={e.id} exhibit={e} />
-            ))}
-            {reservedSlots.slice(0, 2).map((s) => (
-              <ReservedCard key={s.number} slot={s} />
             ))}
           </div>
         </div>

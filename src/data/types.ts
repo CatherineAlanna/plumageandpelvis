@@ -1,77 +1,64 @@
-// Content model for the archive. Mirrors section 7 of the build spec, with a
-// few additions (citations, candidate counterparts, row verification) so that
-// unconfirmed material can be labelled honestly in the UI.
-
-export type VideoSource = {
-  kind: "selfHosted" | "youtube" | "vimeo" | "placeholder";
-  /** selfHosted: file URL. youtube/vimeo: the video ID. placeholder: unused. */
-  url?: string;
-  posterUrl?: string;
-  sourceTitle: string;
-  creator?: string;
-  creditUrl?: string;
-  licenseNotes?: string;
-  startAtSeconds?: number;
-  endAtSeconds?: number;
-  captionsUrl?: string;
-};
+// Content model for the archive. Follows the schema in the "First Three
+// Exhibits" brief, keeping unverified material explicitly labelled.
 
 export type Citation = {
   label: string;
   url: string;
-  note?: string;
 };
 
-export type BirdCandidate = {
-  commonName: string;
-  scientificName: string;
-  rationale: string;
-  reference: Citation;
+export type VideoSource = {
+  /** youtube/vimeo embed the publisher's own player; external links out only. */
+  provider: "youtube" | "vimeo" | "external";
+  videoId?: string;
+  /** Page for "Watch original". Always required. */
+  sourceUrl: string;
+  sourceTitle: string;
+  creator: string;
+  /** Null until the clip has been watched and a segment confirmed. */
+  startSeconds: number | null;
+  endSeconds: number | null;
+  rightsNote?: string;
 };
 
-export type ComparisonRow = {
-  human: string;
+export type LedgerRow = {
+  dimension: string;
   avian: string;
-  /** False until the behaviour has been confirmed in both chosen clips. */
-  verified: boolean;
+  human: string;
 };
+
+export type ExhibitStatus = "candidate" | "verified" | "published";
+
+/** Curator's ranking, a satirical editorial judgment rather than a measurement. */
+export type MatchStrength = "unassessed" | "conceptual" | "moderate" | "uncanny";
 
 export type Exhibit = {
   id: string;
   slug: string;
   number: number;
   title: string;
-  status: "draft" | "published";
-  summary: string;
-  human: {
-    name: string;
-    fictionalClassification?: string;
-    displayLabel: string;
-    behaviors: string[];
-    caption: string;
-    video: VideoSource;
-  };
+  movementType: string;
+  status: ExhibitStatus;
+  matchStrength: MatchStrength;
+  /** Deadpan editorial line. Comedy, not science. */
+  description: string;
+  scientificClaimDisclaimer: string;
   bird: {
-    /** Use "TBD" until a species has been selected and verified. */
-    commonName: string;
-    scientificName?: string;
-    behaviors: string[];
-    caption: string;
+    species: string;
+    scientificName: string;
     video: VideoSource;
-    referenceUrls: string[];
-    candidates?: BirdCandidate[];
+    /** 100–160 words of sourced, verified natural history. */
+    naturalHistory: string;
+    facts: string[];
+    citations: Citation[];
   };
-  hypothesis: string;
-  fieldNotes: string;
-  comparisonRows: ComparisonRow[];
-  narrationText?: string;
-  citations: Citation[];
-  pendingDecisions?: string[];
-  tags: string[];
-};
-
-/** A reserved catalogue number with no content yet. Never given media. */
-export type ReservedSlot = {
-  number: number;
-  workingFormat: string;
+  human: {
+    performer: string;
+    work: string;
+    video: VideoSource;
+    alternatives?: Citation[];
+  };
+  /** What the viewer should notice. Editorial; asserts no synchronization. */
+  observation: string[];
+  ledger: LedgerRow[];
+  reviewNotes: string;
 };

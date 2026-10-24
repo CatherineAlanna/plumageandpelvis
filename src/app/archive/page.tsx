@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { ExhibitCard, ReservedCard } from "@/components/ExhibitCard";
-import { exhibits, reservedSlots } from "@/data/exhibits";
+import { ArchiveBrowser } from "@/components/ArchiveBrowser";
+import { exhibits } from "@/data/exhibits";
 
 export const metadata: Metadata = {
   title: "The Archive",
@@ -15,22 +15,15 @@ export default function ArchivePage() {
           <p className="eyebrow">Collection index · {exhibits.length} catalogued</p>
           <h1 className="display page-title">The Archive</h1>
           <p className="lede">
-            Each exhibit pairs one human performance with one avian courtship display. Specimens are
-            admitted only once both recordings have been located, licensed, and reviewed.
+            Each exhibit pairs one avian courtship display with one human performance. Pairings
+            marked <em>candidate</em> are under active investigation and have not yet been verified
+            against both recordings.
           </p>
         </div>
       </header>
       <section className="section">
         <div className="container">
-          <h2 className="visually-hidden">Exhibits</h2>
-          <div className="card-grid">
-            {exhibits.map((e) => (
-              <ExhibitCard key={e.id} exhibit={e} />
-            ))}
-            {reservedSlots.map((s) => (
-              <ReservedCard key={s.number} slot={s} />
-            ))}
-          </div>
+          <ArchiveBrowser exhibits={exhibits} />
         </div>
       </section>
     </>

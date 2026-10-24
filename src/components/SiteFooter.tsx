@@ -18,7 +18,7 @@ export function SiteFooter() {
             <h2>The Collection</h2>
             <ul>
               <li><Link href="/archive">The Archive</Link></li>
-              <li><Link href="/archive/the-showman">Exhibit 001: The Showman</Link></li>
+              <li><Link href="/archive/the-chest-thruster">Exhibit 001: The Chest-Thruster</Link></li>
               <li><Link href="/methodology">Methodology</Link></li>
               <li><Link href="/about">About</Link></li>
             </ul>

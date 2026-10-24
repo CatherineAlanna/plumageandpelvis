@@ -38,23 +38,23 @@ export default function AboutPage() {
 
             <h2 id="footage">Footage credits &amp; licensing</h2>
             <p>
-              Every exhibit lists the source, creator, licence and segment of each clip in its
-              Footage Credits section. Clips appear only with permission or through a provider’s
+              Every exhibit lists the source, creator and segment of each clip in its Sources
+              section, with a link to the original. Clips appear only with permission or through a provider’s
               embeddable player under its terms. Music videos and performance recordings are never
               downloaded and re-hosted without the rights holder’s consent.
             </p>
             <p>
-              Exhibits whose footage is still being licensed are marked <em>Draft</em> and show an
-              explicit “footage pending” panel in place of video.
+              Pairings still under review are marked <em>Candidate</em>. Where a clip can only be
+              linked, not embedded, the exhibit shows a “view at source” panel in place of a player.
             </p>
 
             <h2 id="accessibility">Accessibility</h2>
             <p>
               The archive is designed to meet WCAG 2.2 AA. All controls are keyboard operable,
-              focus is always visible, nothing plays automatically, and every clip starts muted.
-              Interface motion is disabled when your system requests reduced motion. Captions are
-              shown where the footage provides them, and each exhibit carries a written transcript
-              of its narration.
+              focus is always visible, and nothing plays until you press play. Interface motion is
+              disabled when your system requests reduced motion. Embedded players request captions
+              where the publisher provides them, and every exhibit describes in writing what to
+              watch for.
             </p>
             <p>
               If something in the archive does not work for you, the Department would genuinely

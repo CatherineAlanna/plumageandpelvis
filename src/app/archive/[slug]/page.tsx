@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { VideoDiptych } from "@/components/VideoDiptych";
+import { ComparativeTheater } from "@/components/ComparativeTheater";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
-import { catalogNumber, exhibits, getExhibit, nextExhibit } from "@/data/exhibits";
-import type { Exhibit, VideoSource } from "@/data/types";
+import {
+  catalogNumber,
+  exhibitNumber,
+  exhibits,
+  getExhibit,
+  matchLabel,
+  neighbours,
+  statusLabel,
+} from "@/data/exhibits";
+import type { Citation, VideoSource } from "@/data/types";
 
 type Params = { slug: string };
 
@@ -21,38 +29,50 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const title = `${catalogNumber(e.number)}: ${e.title}`;
   return {
     title,
-    description: e.hypothesis,
+    description: e.description,
     alternates: { canonical: `/archive/${e.slug}` },
-    openGraph: { title, description: e.summary, url: `/archive/${e.slug}` },
+    openGraph: { title, description: e.description, url: `/archive/${e.slug}` },
   };
 }
 
-function birdName(e: Exhibit) {
-  return e.bird.commonName === "TBD" ? "Species to be confirmed" : e.bird.commonName;
+function ExternalLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer">
+      {children}
+      <span className="visually-hidden"> (opens in a new tab)</span> ↗
+    </a>
+  );
 }
 
-function Credit({ side, v }: { side: string; v: VideoSource }) {
-  const pending = v.kind === "placeholder";
+function SourceCard({ heading, v, extra }: { heading: string; v: VideoSource; extra?: Citation[] }) {
   return (
     <div className="credit specimen-card">
-      <p className="eyebrow" style={{ marginBottom: 14 }}>{side} footage</p>
+      <p className="eyebrow" style={{ marginBottom: 14 }}>{heading}</p>
       <dl>
-        <dt>Source</dt>
-        <dd>{v.creditUrl ? <a href={v.creditUrl}>{v.sourceTitle}</a> : v.sourceTitle}</dd>
-        <dt>Creator</dt>
-        <dd>{v.creator ?? <span className="tbd">TBD</span>}</dd>
-        <dt>Licence</dt>
-        <dd>{v.licenseNotes ?? <span className="tbd">TBD</span>}</dd>
-        <dt>Segment</dt>
+        <dt>Video</dt>
+        <dd><ExternalLink href={v.sourceUrl}>{v.sourceTitle}</ExternalLink></dd>
+        <dt>Credit</dt>
+        <dd>{v.creator}</dd>
+        <dt>Player</dt>
         <dd>
-          {pending || v.startAtSeconds === undefined ? (
-            <span className="tbd">TBD</span>
-          ) : (
-            `${v.startAtSeconds}s – ${v.endAtSeconds !== undefined ? `${v.endAtSeconds}s` : "end"}`
-          )}
+          {v.provider === "external"
+            ? "Linked only, not embedded"
+            : `Publisher’s ${v.provider === "youtube" ? "YouTube" : "Vimeo"} player`}
         </dd>
-        <dt>Captions</dt>
-        <dd>{v.captionsUrl ? "Available" : <span className="tbd">{pending ? "TBD" : "Not provided"}</span>}</dd>
+        <dt>Segment</dt>
+        <dd>{v.startSeconds === null ? <span className="tbd">Not yet timestamped</span> : `${v.startSeconds}s`}</dd>
+        {v.rightsNote && (
+          <>
+            <dt>Note</dt>
+            <dd>{v.rightsNote}</dd>
+          </>
+        )}
+        {extra?.map((c) => (
+          <span key={c.url} style={{ display: "contents" }}>
+            <dt>See also</dt>
+            <dd><ExternalLink href={c.url}>{c.label}</ExternalLink></dd>
+          </span>
+        ))}
       </dl>
     </div>
   );
@@ -63,110 +83,95 @@ export default async function ExhibitPage({ params }: { params: Promise<Params> 
   const e = getExhibit(slug);
   if (!e) notFound();
   const acc = catalogNumber(e.number);
-  const next = nextExhibit(e);
-  const birdPending = e.bird.commonName === "TBD";
+  const { prev, next } = neighbours(e);
 
   return (
     <article>
-      {/* 1. Catalogue number, title, hypothesis */}
+      {/* Masthead and hero title */}
       <header className="exhibit-masthead">
         <div className="container masthead-grid">
-          <p className="exhibit-number" aria-hidden="true">{String(e.number).padStart(3, "0")}</p>
+          <p className="exhibit-number" aria-hidden="true">{exhibitNumber(e.number)}</p>
           <div>
             <div className="meta-row">
-              <span className="eyebrow">Exhibit {acc}</span>
-              <span className={`status-badge ${e.status}`}>
-                {e.status === "draft" ? "Draft exhibit · footage pending" : "Published"}
-              </span>
+              <span className="eyebrow">Exhibit {exhibitNumber(e.number)} / Active investigation</span>
+              <span className={`status-badge status-${e.status}`}>{statusLabel[e.status]}</span>
             </div>
             <h1 className="display exhibit-title">{e.title}</h1>
-            <p className="lede">{e.hypothesis}</p>
+            <p className="exhibit-subjects">
+              <span className="binomial">{e.bird.scientificName}</span>
+              <span className="muted"> ({e.bird.species})</span>
+              <span className="vs" aria-hidden="true"> × </span>
+              <span className="visually-hidden"> compared with </span>
+              <span>{e.human.performer}, <i>{e.human.work}</i></span>
+            </p>
+            <p className="lede editorial">{e.description}</p>
           </div>
         </div>
       </header>
 
-      {/* 2–3. Paired video presentation */}
-      <section className="diptych-wrap" aria-label="Paired specimen footage">
+      {/* Dual specimen theater */}
+      <section className="diptych-wrap" aria-label="Specimen theater">
         <div className="container">
-          <VideoDiptych exhibit={e} />
+          <ComparativeTheater exhibit={e} />
         </div>
       </section>
 
-      {/* 4. Specimen cards */}
-      <section className="section" style={{ paddingTop: 24 }} aria-labelledby="specimens">
-        <div className="container">
-          <h2 id="specimens" className="eyebrow" style={{ marginBottom: 20 }}>Specimen labels</h2>
-          <div className="specimen-cards">
-            <section className="specimen-card human" aria-label="Human specimen">
-              <div className="card-accession">
-                <span className="eyebrow">{acc}-H · Human</span>
-                <span className="mono muted">Performance display</span>
-              </div>
-              <h3 className="specimen-name">{e.human.name}</h3>
-              {e.human.fictionalClassification && (
-                <p style={{ margin: 0 }}>
-                  <span className="binomial">{e.human.fictionalClassification}</span>
-                  <span className="fiction-tag">Fictional</span>
-                </p>
-              )}
-              <p className="descriptor">{e.human.displayLabel}</p>
-              <ul className="behavior-list" aria-label="Observed behaviours">
-                {e.human.behaviors.map((b) => <li key={b}>{b}</li>)}
-              </ul>
-            </section>
-            <section className="specimen-card avian" aria-label="Avian specimen">
-              <div className="card-accession">
-                <span className="eyebrow">{acc}-A · Avian</span>
-                <span className="mono muted">Courtship display</span>
-              </div>
-              <h3 className="specimen-name">{birdName(e)}</h3>
-              <p style={{ margin: 0 }}>
-                {e.bird.scientificName ? (
-                  <span className="binomial">{e.bird.scientificName}</span>
-                ) : (
-                  <span className="tbd">Scientific name: TBD</span>
-                )}
-              </p>
-              <p className="descriptor">
-                {birdPending
-                  ? "Counterpart species has not been selected. Candidates under review are listed in the field report below."
-                  : e.bird.caption}
-              </p>
-              {e.bird.behaviors.length > 0 ? (
-                <ul className="behavior-list" aria-label="Observed behaviours">
-                  {e.bird.behaviors.map((b) => <li key={b}>{b}</li>)}
-                </ul>
-              ) : (
-                <p className="tbd">Observed behaviours: TBD, pending footage review</p>
-              )}
-            </section>
+      {/* Observe the ritual */}
+      <section className="section" style={{ paddingTop: 16 }} aria-labelledby="observe">
+        <div className="container field-report">
+          <div className="journal">
+            <p className="eyebrow" style={{ marginBottom: 6 }}>Editorial · {acc}</p>
+            <h2 id="observe" className="display section-title" style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.8rem)", marginBottom: 18 }}>
+              Observe the Ritual
+            </h2>
+            <ol className="observe-list">
+              {e.observation.map((o) => <li key={o}>{o}</li>)}
+            </ol>
           </div>
+          <aside className="specimen-card" aria-label="Avian specimen label">
+            <div className="card-accession">
+              <span className="eyebrow">{acc}-A · Avian</span>
+              <span className="mono muted">Documented</span>
+            </div>
+            <h3 className="specimen-name">{e.bird.species}</h3>
+            <p style={{ margin: "0 0 16px" }}><span className="binomial">{e.bird.scientificName}</span></p>
+            <ul className="behavior-list" aria-label="Documented behaviours">
+              {e.bird.facts.map((f) => <li key={f}>{f}</li>)}
+            </ul>
+          </aside>
         </div>
       </section>
 
-      {/* 5. Matching behaviour annotation */}
-      <section className="section section-alt" aria-labelledby="comparison">
+      {/* Compare evidence */}
+      <section className="section section-alt" aria-labelledby="ledger">
         <div className="container">
-          <p className="eyebrow">Comparative analysis</p>
-          <h2 id="comparison" className="display section-title" style={{ marginBottom: 28 }}>Mirrored Observations</h2>
-          <p className="muted" style={{ fontSize: 15.5, margin: "-12px 0 20px" }}>
-            Avian entries are provisional until the counterpart clip has been reviewed against the human performance.
+          <p className="eyebrow">Compare the evidence</p>
+          <h2 id="ledger" className="display section-title" style={{ marginBottom: 14 }}>Observation Ledger</h2>
+          <div className="ledger-meta">
+            <span className="mono">
+              Resemblance: <strong>{matchLabel[e.matchStrength]}</strong>
+            </span>
+            <span className="fiction-tag" style={{ marginLeft: 0 }}>Satirical editorial judgment</span>
+          </div>
+          <p className="muted" style={{ fontSize: 15.5, margin: "0 0 20px", maxWidth: "70ch" }}>
+            The avian column restates documented behaviour. The human column describes a performance
+            and implies nothing about motive. Rows are provisional until both clips have been
+            reviewed against each other.
           </p>
           <table className="comparison">
             <thead>
               <tr>
-                <th scope="col">Human performance</th>
-                <th scope="col">Avian performance</th>
+                <th scope="col">Dimension</th>
+                <th scope="col">Specimen A / Avian</th>
+                <th scope="col">Specimen B / Human</th>
               </tr>
             </thead>
             <tbody>
-              {e.comparisonRows.map((r) => (
-                <tr key={r.human}>
-                  <th scope="row" data-label="Human performance">{r.human}</th>
-                  <td data-label="Avian performance">
-                    {r.avian}
-                    {!r.verified && <span className="tbd row-status">Pending verification</span>}
-                  </td>
+              {e.ledger.map((r) => (
+                <tr key={r.dimension}>
+                  <th scope="row" data-label="Dimension" className="mono">{r.dimension}</th>
+                  <td data-label="Specimen A / Avian">{r.avian}</td>
+                  <td data-label="Specimen B / Human">{r.human}</td>
                 </tr>
               ))}
             </tbody>
@@ -174,97 +179,85 @@ export default async function ExhibitPage({ params }: { params: Promise<Params> 
         </div>
       </section>
 
-      {/* 6. Field report */}
-      <section className="section" aria-labelledby="field-report">
-        <div className="container">
-          <p className="eyebrow">Field report</p>
-          <h2 id="field-report" className="display section-title" style={{ marginBottom: 28 }}>Notes from the Arena</h2>
-          <div className="field-report">
-            <div className="journal">
-              <p className="eyebrow" style={{ marginBottom: 14 }}>Observer’s journal · {acc}</p>
-              <blockquote>
-                <p className="dropcap">{e.fieldNotes}</p>
-              </blockquote>
-              {e.narrationText && (
-                <details className="transcript">
-                  <summary>Narration transcript</summary>
-                  <p>{e.narrationText}</p>
-                  <p className="mono muted" style={{ fontStyle: "normal" }}>
-                    Draft script. Narration has not been recorded.
-                  </p>
-                </details>
-              )}
+      {/* Natural history note: verified facts, kept apart from the comedy */}
+      <section className="section" aria-labelledby="natural-history">
+        <div className="container two-col">
+          <div>
+            <p className="eyebrow">Natural history note · sourced</p>
+            <h2 id="natural-history" className="display section-title" style={{ marginBottom: 24 }}>
+              {e.bird.species}
+            </h2>
+            <div className="prose">
+              <p className="dropcap">{e.bird.naturalHistory}</p>
             </div>
-            {e.pendingDecisions && e.pendingDecisions.length > 0 && (
-              <aside className="paper-slip" aria-label="Outstanding curatorial decisions">
-                <p className="eyebrow">Curator’s slip · outstanding</p>
-                <ol className="pending-list" style={{ marginTop: 12 }}>
-                  {e.pendingDecisions.map((d) => <li key={d}>{d}</li>)}
-                </ol>
-              </aside>
-            )}
-          </div>
-
-          {e.bird.candidates && e.bird.candidates.length > 0 && (
-            <div style={{ marginTop: 56 }}>
-              <h3 className="eyebrow" style={{ marginBottom: 18 }}>Candidate avian counterparts under review</h3>
-              <div className="candidates">
-                {e.bird.candidates.map((c) => (
-                  <div className="candidate" key={c.scientificName}>
-                    <span className="mono muted">Candidate</span>
-                    <h4 className="display">{c.commonName}</h4>
-                    <span className="binomial">{c.scientificName}</span>
-                    <p>{c.rationale}</p>
-                    <a className="ref" href={c.reference.url}>Reference ↗</a>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div style={{ marginTop: 56 }}>
-            <h3 className="eyebrow" style={{ marginBottom: 6 }}>Natural-history citations</h3>
+            <h3 className="eyebrow" style={{ margin: "32px 0 6px" }}>References</h3>
             <ol className="citations">
-              {e.citations.map((c) => (
+              {e.bird.citations.map((c) => (
                 <li key={c.url}>
                   <span>
-                    {c.label} <a href={c.url}>{c.url.replace(/^https?:\/\//, "")}</a>
+                    {c.label} <ExternalLink href={c.url}>{c.url.replace(/^https?:\/\/(www\.)?/, "").split("/")[0]}</ExternalLink>
                   </span>
                 </li>
               ))}
             </ol>
           </div>
+          <aside className="sidebar">
+            <div className="paper-slip">
+              <p className="eyebrow">Scientific claims</p>
+              <p>{e.scientificClaimDisclaimer}</p>
+            </div>
+          </aside>
         </div>
       </section>
 
-      {/* 7. Source credits */}
-      <section className="section section-alt" aria-labelledby="credits">
+      {/* Sources */}
+      <section className="section section-alt" aria-labelledby="sources">
         <div className="container">
           <p className="eyebrow">Provenance</p>
-          <h2 id="credits" className="display section-title" style={{ marginBottom: 28 }}>Footage Credits</h2>
+          <h2 id="sources" className="display section-title" style={{ marginBottom: 14 }}>Sources</h2>
+          <p className="muted" style={{ fontSize: 15.5, margin: "0 0 24px", maxWidth: "70ch" }}>
+            Third-party videos remain hosted by their owners and play in the owners’ players. No
+            footage or stills are copied to this site.
+          </p>
           <div className="credits-grid">
-            <Credit side="Human" v={e.human.video} />
-            <Credit side="Avian" v={e.bird.video} />
+            <SourceCard heading="Specimen A / Avian" v={e.bird.video} />
+            <SourceCard heading="Specimen B / Human" v={e.human.video} extra={e.human.alternatives} />
           </div>
+          <details className="transcript review-notes">
+            <summary>Curator’s review notes</summary>
+            <p>{e.reviewNotes}</p>
+          </details>
         </div>
       </section>
 
-      {/* 8. Share and next */}
-      <section className="section" aria-label="Share and continue">
-        <div className="container exhibit-footer-nav">
-          <CopyLinkButton path={`/archive/${e.slug}`} />
-          {next ? (
-            <Link href={`/archive/${next.slug}`} className="btn btn-primary">
-              Next: {catalogNumber(next.number)} {next.title} →
-            </Link>
-          ) : (
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
-              <span className="mono muted">Next exhibit awaiting field observation</span>
-              <Link href="/archive" className="btn">Return to the Archive</Link>
-            </div>
-          )}
+      {/* Share and pagination */}
+      <nav className="section" aria-label="Exhibit navigation">
+        <div className="container">
+          <div className="exhibit-footer-nav" style={{ marginBottom: 28 }}>
+            <CopyLinkButton path={`/archive/${e.slug}`} />
+            <Link href="/archive" className="btn btn-sm">All exhibits</Link>
+          </div>
+          <div className="pager">
+            {prev ? (
+              <Link href={`/archive/${prev.slug}`} className="pager-link">
+                <span className="eyebrow">← Previous specimen · {catalogNumber(prev.number)}</span>
+                <span className="pager-title">{prev.title}</span>
+              </Link>
+            ) : <span />}
+            {next ? (
+              <Link href={`/archive/${next.slug}`} className="pager-link next">
+                <span className="eyebrow">Next specimen · {catalogNumber(next.number)} →</span>
+                <span className="pager-title">{next.title}</span>
+              </Link>
+            ) : (
+              <span className="pager-link next disabled">
+                <span className="eyebrow">Next specimen</span>
+                <span className="pager-title muted">Awaiting field observation</span>
+              </span>
+            )}
+          </div>
         </div>
-      </section>
+      </nav>
     </article>
   );
 }

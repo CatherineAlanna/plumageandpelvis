@@ -17,7 +17,7 @@ const criteria = [
 
 export default function MethodologyPage() {
   const allCitations = Array.from(
-    new Map(exhibits.flatMap((e) => e.citations).map((c) => [c.url, c])).values(),
+    new Map(exhibits.flatMap((e) => e.bird.citations).map((c) => [c.url, c])).values(),
   );
   return (
     <>

@@ -17,37 +17,39 @@ npm run build    # production build (all routes prerender statically)
 | Route | Page |
 |---|---|
 | `/` | Landing: masthead, featured exhibit, archive preview |
-| `/archive` | Exhibit index, plus reserved “Awaiting Field Observation” slots |
-| `/archive/[slug]` | Exhibit detail (e.g. `/archive/the-showman`) |
+| `/archive` | Exhibit index with search and movement-type filter |
+| `/archive/[slug]` | Exhibit detail: `the-chest-thruster`, `the-moonwalker`, `the-ballerina` |
 | `/methodology` | Selection criteria, limitations, sources |
 | `/about` | Project, footage licensing, accessibility |
+
+`/archive/the-showman` (the original Exhibit 001) redirects to `/archive/the-chest-thruster`.
 
 ## Editing content
 
 All content lives in `src/data/exhibits.ts` (types in `src/data/types.ts`). Adding an exhibit
 means adding an object to `exhibits`; no UI code changes are needed.
 
-Unknown values stay explicit: a bird `commonName` of `"TBD"` renders as “Species to be confirmed”,
-and comparison rows with `verified: false` show “Pending verification”.
+- `status`: `candidate` until both clips are watched and the pairing confirmed, then `verified`
+  or `published`. The badge on the page follows it.
+- `matchStrength`: `unassessed`, `conceptual`, `moderate` or `uncanny`. Shown as satirical
+  editorial judgment, never as measurement.
+- `bird.naturalHistory` and `bird.facts` must be sourced (`bird.citations`). Comedy goes in
+  `description`, `observation` and the human column of `ledger`, never in the bird facts.
 
-### Adding footage
+### Video sources
 
-Each side’s `video` is a `VideoSource`. The player adapts to what the sources can actually do:
+Each specimen's `video` uses the publisher's own player. Nothing is downloaded or re-hosted.
 
-| Human / Bird `kind` | What the page shows |
+| `provider` | What the page shows |
 |---|---|
-| either is `placeholder` | Labelled “Footage pending” panels; no playback controls |
-| both `selfHosted` | Shared controls: Play/Pause both, Restart, shared seek, audio selector (defaults to both muted), loop |
-| `youtube` / `vimeo` involved | Two independent embedded players with a “play each clip” note |
+| `youtube` | Privacy-enhanced YouTube embed of `videoId` |
+| `vimeo` | Vimeo embed of `videoId` |
+| `external` | A "view at source" panel linking to `sourceUrl` (for clips that can't or shouldn't be embedded) |
 
-- `selfHosted`: put the licensed file in `public/media/` and set `url: "/media/clip.mp4"`.
-  Add `captionsUrl` (WebVTT) and `posterUrl` if available.
-- `youtube` / `vimeo`: set `url` to the video **ID** only.
-- `startAtSeconds` / `endAtSeconds` align the key moments. The shared timeline uses the shorter
-  of the two segments.
-- Fill in `creator`, `creditUrl`, `licenseNotes`; they appear in the Footage Credits section.
-
-When both clips and the bird species are confirmed, set the exhibit’s `status` to `"published"`.
+Every player has a "Watch original" link to `sourceUrl`. `startSeconds` / `endSeconds` stay
+`null` until someone has watched the clip and confirmed the segment; when set, they're passed to
+the player as a start time (YouTube also honours the end time). The two players are independent;
+there is no synchronised playback.
 
 ## Design system
 
