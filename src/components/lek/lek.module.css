@@ -295,12 +295,15 @@
 }
 .lineup button:focus-visible,
 .dossier:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
-.dossier {
+.dossier { color: var(--white); }
+.exits {
   position: absolute;
   left: 16px;
-  bottom: 18px;
+  bottom: 14px;
   z-index: 4;
-  color: var(--white);
+  display: grid;
+  justify-items: start;
+  gap: 2px;
 }
 
 /* ---------- The party ---------- */
@@ -326,7 +329,7 @@
 
 @media (min-width: 720px) {
   .lineup { top: 28px; right: 32px; }
-  .dossier { left: 32px; bottom: 26px; }
+  .exits { left: 32px; bottom: 22px; }
 }
 @media (max-width: 719px) {
   .floor { padding: 110px 16px 150px; }
@@ -338,5 +341,6 @@
   .amp { top: 9%; left: auto; right: 6vw; margin: 0; font-size: 4.5rem; }
   .lineup { top: auto; right: auto; bottom: 18px; left: 16px; justify-items: start; }
   .lineup button[aria-current]::after { order: -1; }
-  .dossier { bottom: 104px; }
+  .exits { bottom: 104px; }
+  .floor { padding-bottom: 180px; }
 }

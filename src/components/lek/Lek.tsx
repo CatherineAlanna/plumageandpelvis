@@ -70,7 +70,7 @@ function Floor({ exhibit, children }: { exhibit: Exhibit; children: React.ReactN
   );
 }
 
-export function LekMock() {
+export function Lek() {
   const [i, setI] = useState(0);
   const exhibit = cast[i];
   return (
@@ -83,9 +83,14 @@ export function LekMock() {
             </button>
           ))}
         </nav>
-        <Link className={s.dossier} href={`/archive/${exhibit.slug}`}>
-          The evidence <ArrowOut />
-        </Link>
+        <nav className={s.exits} aria-label="Site">
+          <Link className={s.dossier} href={`/archive/${exhibit.slug}`}>
+            The evidence <ArrowOut />
+          </Link>
+          <Link className={s.dossier} href="/archive">
+            The archive <ArrowOut />
+          </Link>
+        </nav>
       </Floor>
     </div>
   );
