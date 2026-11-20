@@ -1,0 +1,264 @@
+/* Mock C · FIGHT NIGHT. A letterpress bout poster printed split-fountain:
+   two inks rolled onto one press, bleeding into each other. Bird in the blue
+   corner, man in the red, and a ring-side button that rings the bell. */
+
+.poster {
+  --ink: #111014;
+  --cream: #fff4dc;
+  --red: #e3101e;
+  --blue: #1340d6;
+  --yellow: #ffe11b;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --veil: #1a1830;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px 56px;
+  overflow: hidden;
+  color: var(--ink);
+  font-family: var(--fn-ui), system-ui, sans-serif;
+  background: linear-gradient(180deg, #ff3e8a 0%, #ff7b1c 28%, #ffe11b 56%, #9ff07a 74%, #1fd0ee 100%);
+  background-size: 100% 100%;
+}
+.poster ::selection { background: var(--ink); color: var(--yellow); }
+
+/* ---------- Bill ---------- */
+
+.bill {
+  width: min(1180px, 100%);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  padding: 18px 0 14px;
+  border-bottom: 4px solid var(--ink);
+}
+.presents {
+  font-family: var(--fn-display), serif;
+  font-size: 18px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.card { display: flex; gap: 6px; flex-wrap: wrap; }
+.card button {
+  appearance: none;
+  border: 2px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  padding: 5px 10px 4px;
+  font: 800 12px/1 var(--fn-ui), sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.card button:hover { background: rgb(17 16 20 / 0.1); }
+.card button[aria-current] { background: var(--ink); color: var(--yellow); }
+.card button:focus-visible,
+.dossier:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.dossier {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--ink);
+  font: 800 12px/1 var(--fn-ui), sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.dossier:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* ---------- Billing type ---------- */
+
+.name {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  width: min(1180px, 100%);
+  font-family: var(--fn-display), serif;
+  font-size: min(15rem, calc(min(1180px, 100vw - 32px) / (var(--chars) * 0.8)));
+  line-height: 0.8;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  mix-blend-mode: multiply;
+}
+.nameTop { margin-top: 28px; text-align: left; }
+.nameBottom { text-align: right; }
+
+/* ---------- The ring ---------- */
+
+.ring {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: min(1060px, 100%);
+  margin: clamp(-70px, -5vw, -18px) 0;
+}
+.corner {
+  aspect-ratio: 4 / 3;
+  background: var(--ink);
+  border: clamp(6px, 0.9vw, 10px) solid;
+  box-shadow: 0 34px 50px -22px rgb(17 16 20 / 0.6);
+  transition: transform 800ms var(--ease);
+}
+.corner :global(.well-host iframe) {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  width: auto;
+  aspect-ratio: 16 / 9;
+  transform: translateX(-50%);
+}
+.blue { border-color: var(--blue); transform: rotate(-3deg); }
+.red { border-color: var(--red); transform: rotate(2.5deg); }
+
+.vs {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 2.3em;
+  aspect-ratio: 1;
+  margin: 0 -0.6em;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--yellow);
+  font-family: var(--fn-display), serif;
+  font-size: clamp(1.8rem, 5vw, 4.4rem);
+  line-height: 1;
+  padding-bottom: 0.12em;
+  text-transform: uppercase;
+  transform: rotate(-10deg);
+}
+
+.offsite {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  color: var(--cream);
+  font: 800 13px var(--fn-ui), sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.offsite:hover { color: var(--yellow); }
+
+/* ---------- The button ---------- */
+
+.panic {
+  margin-top: 36px;
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  cursor: pointer;
+  font: inherit;
+  color: var(--ink);
+}
+.panic:disabled { cursor: not-allowed; opacity: 0.5; }
+.panic:focus-visible { outline: none; }
+.panic:focus-visible .stand { outline: 4px solid var(--ink); outline-offset: 6px; }
+
+.stand {
+  position: relative;
+  flex: none;
+  width: clamp(112px, 12vw, 156px);
+  aspect-ratio: 1;
+  border-radius: 16px;
+  background: radial-gradient(circle at 50% 30%, #3a3940, var(--ink) 70%);
+  box-shadow:
+    0 26px 36px -12px rgb(17 16 20 / 0.6),
+    inset 0 2px 0 rgb(255 255 255 / 0.18);
+}
+.mushroom {
+  position: absolute;
+  inset: 13%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #ff9b9b 0, #ff2b2b 24%, #c70014 62%, #7d000b 100%);
+  transform: translateY(-13px);
+  box-shadow: 0 13px 0 0 #6a0009, 0 22px 22px rgb(0 0 0 / 0.5);
+  transition: transform 160ms var(--ease), box-shadow 160ms var(--ease), filter 200ms;
+}
+.mushroom::after {
+  content: "";
+  position: absolute;
+  top: 9%;
+  left: 19%;
+  width: 45%;
+  height: 25%;
+  border-radius: 50%;
+  background: linear-gradient(rgb(255 255 255 / 0.75), rgb(255 255 255 / 0));
+  transform: rotate(-18deg);
+}
+.panic:hover:not(:disabled) .mushroom { filter: brightness(1.12); }
+.panic:active:not(:disabled) .mushroom,
+.poster[data-phase="party"] .mushroom {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 0 0 #6a0009, 0 6px 8px rgb(0 0 0 / 0.45);
+}
+
+.plate {
+  max-width: 13ch;
+  padding: 14px 20px 12px;
+  background:
+    radial-gradient(circle at 8px 8px, var(--ink) 0 2.5px, transparent 3px),
+    radial-gradient(circle at calc(100% - 8px) 8px, var(--ink) 0 2.5px, transparent 3px),
+    radial-gradient(circle at 8px calc(100% - 8px), var(--ink) 0 2.5px, transparent 3px),
+    radial-gradient(circle at calc(100% - 8px) calc(100% - 8px), var(--ink) 0 2.5px, transparent 3px),
+    var(--cream);
+  border: 3px solid var(--ink);
+  font-family: var(--fn-display), serif;
+  font-size: clamp(1.25rem, 2.4vw, 1.9rem);
+  line-height: 1;
+  text-transform: uppercase;
+  text-align: left;
+}
+.clock { font-variant-numeric: tabular-nums; color: var(--red); }
+
+.pending {
+  margin: 14px 0 0;
+  font: 800 12px var(--fn-ui), sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ---------- The bout ---------- */
+
+.poster[data-phase="party"] .blue { transform: rotate(0deg) scale(1.03); }
+.poster[data-phase="party"] .red { transform: rotate(0deg) scale(1.03); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .poster[data-phase="party"] {
+    background-size: 100% 300%;
+    animation: fountain 3s linear infinite alternate;
+  }
+  .poster[data-phase="party"] .nameTop { animation: jab 500ms var(--ease) infinite; }
+  .poster[data-phase="party"] .nameBottom { animation: jab 500ms var(--ease) 250ms infinite; }
+  .poster[data-phase="party"] .vs { animation: bell 1s steps(2) infinite; }
+}
+@keyframes fountain { to { background-position: 0 100%; } }
+@keyframes jab {
+  0% { transform: translateX(-1.5%); }
+  100% { transform: translateX(0); }
+}
+@keyframes bell {
+  to { transform: rotate(10deg) scale(1.12); }
+}
+
+@media (max-width: 719px) {
+  .corner { aspect-ratio: 3 / 4; }
+  .panic { flex-direction: column; gap: 14px; }
+  .plate { text-align: center; }
+}
