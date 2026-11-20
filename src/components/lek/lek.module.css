@@ -74,6 +74,9 @@
 
 /* ---------- The two dancers ---------- */
 
+/* On phones the ampersand sits between the stacked screens. */
+.ampPhone { display: none; }
+
 .pair {
   position: relative;
   z-index: 1;
@@ -368,12 +371,27 @@
 }
 @media (max-width: 719px) {
   .floor { padding: 110px 16px 150px; }
-  .pair { width: 100%; flex-direction: column; gap: 28px; }
+  .pair { width: 100%; flex-direction: column; gap: 6px; }
   .panel { width: 90%; border-width: 4px; }
   .bird, .floor[data-phase="party"] .bird { transform: rotate(-2deg); }
   .human, .floor[data-phase="party"] .human { align-self: flex-end; transform: rotate(2deg); }
   .tape { bottom: 10px; }
-  .amp { top: 9%; left: auto; right: 6vw; margin: 0; font-size: 4.5rem; }
+  .amp { display: none; }
+  .ampPhone {
+    display: block;
+    align-self: flex-end;
+    position: relative;
+    z-index: 2;
+    margin: 0 5vw 0 0;
+    font: 900 4rem/0.95 var(--lek-display), sans-serif;
+    color: var(--ember);
+    transform: rotate(-14deg);
+    pointer-events: none;
+  }
+  .console { margin-top: 28px; }
+  .housing { width: 118px; border-radius: 16px; }
+  .dome { transform: translateY(-9px); box-shadow: 0 9px 0 0 #1c0003, 0 14px 14px 1px rgb(0 0 0 / 0.55); }
+  .domeText { font-size: 1.35rem; }
   .next { top: auto; right: auto; bottom: 20px; left: 16px; }
   .exits { bottom: 84px; }
   .floor { padding-bottom: 230px; }

@@ -31,6 +31,7 @@ function Floor({ exhibit, children }: { exhibit: Exhibit; children: React.ReactN
         <Well hostRef={birdHost} live={live} poster={youTubePoster(exhibit.bird.video)} className={`${s.panel} ${s.bird}`}>
           <span className={s.tape}>{b.bird}</span>
         </Well>
+        <span className={s.ampPhone} aria-hidden="true">&amp;</span>
         <Well
           hostRef={humanHost}
           live={live}
