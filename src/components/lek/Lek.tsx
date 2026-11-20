@@ -122,8 +122,11 @@ export function Lek() {
           Now showing {exhibit.bird.species} and {exhibit.human.performer}
         </p>
         <nav className={s.exits} aria-label="Site">
-          <Link className={s.dossier} href={`/archive/${exhibit.slug}`}>
-            The evidence <ArrowOut />
+          <Link className={s.evidence} href={`/archive/${exhibit.slug}`}>
+            <span className={s.caseLine}>Case file · {exhibit.movementType}</span>
+            <span className={s.evidenceWord}>
+              The evidence <ArrowOut size={22} />
+            </span>
           </Link>
           <Link className={s.dossier} href="/archive">
             The archive <ArrowOut />

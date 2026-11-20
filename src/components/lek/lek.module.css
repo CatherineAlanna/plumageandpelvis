@@ -309,8 +309,37 @@
   z-index: 4;
   display: grid;
   justify-items: start;
-  gap: 2px;
+  gap: 10px;
 }
+
+/* The evidence: a case-file tag, the way into the pairing's exhibit. */
+.evidence {
+  display: grid;
+  gap: 4px;
+  padding: 10px 18px 10px 16px;
+  background: var(--cyan);
+  color: var(--ground);
+  text-decoration: none;
+  transform: rotate(-2.5deg);
+  box-shadow: 0 18px 30px -12px rgb(0 0 0 / 0.7);
+  transition: transform 300ms var(--ease), background-color 200ms var(--ease);
+}
+.caseLine {
+  font: 700 11px/1.2 var(--lek-ui), sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.evidenceWord {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 900 clamp(1.7rem, 2.6vw, 2.4rem)/0.9 var(--lek-display), sans-serif;
+  text-transform: uppercase;
+}
+.evidenceWord svg { transition: transform 300ms var(--ease); }
+.evidence:hover { transform: rotate(0deg) scale(1.04); background: var(--white); }
+.evidence:hover .evidenceWord svg { transform: translate(3px, -3px); }
+.evidence:focus-visible { outline: 3px solid var(--acid); outline-offset: 4px; }
 
 /* ---------- The party ---------- */
 
@@ -347,5 +376,5 @@
   .amp { top: 9%; left: auto; right: 6vw; margin: 0; font-size: 4.5rem; }
   .next { top: auto; right: auto; bottom: 20px; left: 16px; }
   .exits { bottom: 84px; }
-  .floor { padding-bottom: 180px; }
+  .floor { padding-bottom: 230px; }
 }
