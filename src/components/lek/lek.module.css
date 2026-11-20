@@ -1,0 +1,420 @@
+/* Mock A · LEK. The lek is a dance floor: a dark room, two dancers under
+   coloured light, and one very large red button. */
+
+.root {
+  --ground: #0e0716;
+  --acid: #c8ff2e;
+  --mag: #ff2e9a;
+  --cyan: #22e4ff;
+  --ember: #ff6a1a;
+  --white: #fff6fb;
+  --veil: #1b0d24;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--ground);
+  color: var(--white);
+  font-family: var(--lek-ui), system-ui, sans-serif;
+  min-height: 100svh;
+  overflow: hidden;
+}
+.root ::selection { background: var(--acid); color: var(--ground); }
+
+.floor {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 96px 16px 40px;
+  isolation: isolate;
+}
+
+.lights {
+  position: absolute;
+  inset: -20%;
+  z-index: -2;
+  background:
+    radial-gradient(38% 34% at 22% 18%, rgb(255 46 154 / 0.55), transparent 70%),
+    radial-gradient(44% 40% at 82% 84%, rgb(200 255 46 / 0.4), transparent 70%),
+    radial-gradient(30% 30% at 84% 12%, rgb(34 228 255 / 0.35), transparent 70%),
+    radial-gradient(30% 26% at 14% 88%, rgb(255 106 26 / 0.3), transparent 70%);
+  filter: blur(8px);
+}
+
+/* ---------- Wordmark: cropped by the room ---------- */
+
+.word {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  z-index: -1;
+  pointer-events: none;
+  font-family: var(--lek-display), sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.78;
+  letter-spacing: -0.02em;
+}
+.top,
+.bottom {
+  position: absolute;
+  font-size: clamp(5.5rem, 23vw, 24rem);
+}
+.top { top: -0.1em; left: -0.03em; color: var(--acid); }
+.bottom { bottom: -0.12em; right: -0.03em; color: var(--mag); }
+.amp {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  margin-left: -0.3em;
+  font-size: clamp(3rem, 11vw, 10rem);
+  color: var(--ember);
+  transform: rotate(-14deg);
+}
+
+/* ---------- The two dancers ---------- */
+
+/* On phones the ampersand sits between the stacked screens. */
+.ampPhone { display: none; }
+
+.pair {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: min(1280px, 94vw);
+}
+.panel {
+  width: 45.5%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border: 6px solid;
+  box-shadow: 0 32px 60px -12px rgb(0 0 0 / 0.75);
+  transition: transform 900ms var(--ease);
+}
+/* The whole frame shows: nothing of the dance is cropped. */
+.bird { border-color: var(--acid); transform: rotate(-3deg) translateY(10%); }
+.human { border-color: var(--mag); transform: rotate(2.5deg) translateY(-6%); }
+
+.tape {
+  position: absolute;
+  bottom: 16px;
+  z-index: 2;
+  padding: 2px 12px 0;
+  font-family: var(--lek-display), sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.1rem, 2.4vw, 1.9rem);
+  text-transform: uppercase;
+  line-height: 1.1;
+  color: var(--ground);
+}
+.bird .tape { left: -10px; background: var(--acid); transform: rotate(-3deg); }
+.human .tape { right: -10px; background: var(--mag); transform: rotate(2deg); }
+
+.offsite {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 13px;
+  color: var(--white);
+  text-decoration: none;
+  background: radial-gradient(circle at 50% 50%, rgb(255 46 154 / 0.35), #120a1a 70%);
+}
+.offsite:hover { color: var(--mag); }
+
+/* ---------- The button ---------- */
+
+/* On wide screens the dock is invisible and its parts float on the floor;
+   on phones it becomes the row under the videos. */
+.dock { display: contents; }
+
+.console {
+  position: relative;
+  z-index: 3;
+  margin-top: clamp(-90px, -7vw, -40px);
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.panic {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  color: var(--white);
+  cursor: pointer;
+  font: inherit;
+}
+.panic:disabled { cursor: not-allowed; opacity: 0.45; }
+.panic:focus-visible { outline: none; }
+.panic:focus-visible .housing { outline: 4px solid var(--cyan); outline-offset: 6px; }
+
+.housing {
+  position: relative;
+  width: clamp(150px, 17vw, 210px);
+  aspect-ratio: 1;
+  border-radius: 22px;
+  /* Hazard housing: the real object the brief asks for. */
+  background: repeating-linear-gradient(-45deg, #151515 0 13px, #ffd400 13px 26px);
+  box-shadow:
+    0 28px 44px -10px rgb(0 0 0 / 0.85),
+    inset 0 2px 0 rgb(255 255 255 / 0.35);
+}
+.housing::before {
+  /* steel collar the dome sits in */
+  content: "";
+  position: absolute;
+  inset: 15%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 40%, #4a4a52, #16161a 70%);
+  box-shadow: inset 0 4px 10px rgb(0 0 0 / 0.8), 0 1px 0 rgb(255 255 255 / 0.25);
+}
+.dome {
+  position: absolute;
+  inset: 21%;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 34% 24%, #a3303a 0, #5c0512 10%, #4a000e 32%, #3c000a 70%, #260006 100%);
+  transform: translateY(-14px);
+  box-shadow:
+    0 14px 0 0 #1c0003,
+    0 22px 22px 2px rgb(0 0 0 / 0.55);
+  transition: transform 160ms var(--ease), box-shadow 160ms var(--ease), filter 200ms;
+}
+.dome::after {
+  content: "";
+  position: absolute;
+  top: 9%;
+  left: 18%;
+  width: 46%;
+  height: 26%;
+  border-radius: 50%;
+  z-index: 2;
+  background: linear-gradient(rgb(255 255 255 / 0.6), rgb(255 255 255 / 0));
+  transform: rotate(-18deg);
+  pointer-events: none;
+}
+.panic:hover:not(:disabled) .dome { filter: saturate(1.3); }
+.panic:active:not(:disabled) .dome,
+.floor[data-phase="party"] .dome {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 0 0 #1c0003, 0 8px 10px rgb(0 0 0 / 0.5);
+}
+.domeText {
+  /* Brush-painted onto the dome: bright signal red, wrapped to the curve,
+     with a dry-brush edge where the paint thins out. */
+  position: relative;
+  z-index: 1;
+  font-family: var(--lek-display), sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.75rem, 2.9vw, 2.45rem);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: #ff2a1a;
+  transform: perspective(160px) rotateX(16deg) scaleX(1.06);
+  text-shadow:
+    0 1px 0 rgb(255 140 120 / 0.55),
+    0 -1px 0 rgb(40 0 0 / 0.5);
+  -webkit-mask-image:
+    radial-gradient(circle at 18% 30%, transparent 0 0.7px, #000 1.1px),
+    radial-gradient(circle at 64% 72%, transparent 0 0.5px, #000 0.9px),
+    linear-gradient(#000, #000);
+  -webkit-mask-size: 23px 17px, 29px 13px, 100% 100%;
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(circle at 18% 30%, transparent 0 0.7px, #000 1.1px),
+    radial-gradient(circle at 64% 72%, transparent 0 0.5px, #000 0.9px),
+    linear-gradient(#000, #000);
+  mask-size: 23px 17px, 29px 13px, 100% 100%;
+  mask-composite: intersect;
+}
+
+.label {
+  padding: 4px 10px 2px;
+  background: var(--ground);
+  font-family: var(--lek-display), sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 2.6vw, 2.2rem);
+  line-height: 0.88;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+.pending {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(255 246 251 / 0.7);
+}
+
+/* ---------- Chrome ---------- */
+
+.next {
+  position: absolute;
+  top: 18px;
+  right: 16px;
+  z-index: 4;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 6px 16px;
+  background: var(--ground);
+  border: 3px solid var(--acid);
+  border-radius: 999px;
+  color: var(--acid);
+  font: 900 clamp(1.3rem, 1.8vw, 1.6rem)/1 var(--lek-display), sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 200ms var(--ease), color 200ms var(--ease), transform 200ms var(--ease);
+}
+.next:hover { background: var(--acid); color: var(--ground); }
+.next:active { transform: translateY(2px); }
+.next:focus-visible { outline: 3px solid var(--cyan); outline-offset: 4px; }
+.next svg { transition: transform 300ms var(--ease); }
+.next:hover svg { transform: translateX(3px); }
+
+.dossier {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  font: 700 12px/1.2 var(--lek-ui), sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(255 246 251 / 0.62);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.dossier:hover { color: var(--white); }
+.dossier:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+.dossier { color: var(--white); }
+.exits {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  z-index: 4;
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+
+/* The evidence: a case-file tag, the way into the pairing's exhibit. */
+.evidence {
+  display: grid;
+  gap: 4px;
+  padding: 8px 16px 8px 14px;
+  /* Secondary to STRUT: an outline, not a fill. It fills on hover. */
+  background: rgb(14 7 22 / 0.72);
+  border: 2px solid var(--cyan);
+  color: var(--cyan);
+  text-decoration: none;
+  transform: rotate(-2.5deg);
+  transition: transform 300ms var(--ease), background-color 200ms var(--ease);
+}
+.caseLine {
+  font: 700 11px/1.2 var(--lek-ui), sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.evidenceWord {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 900 clamp(1.7rem, 2.6vw, 2.4rem)/0.9 var(--lek-display), sans-serif;
+  text-transform: uppercase;
+}
+.evidenceWord svg { transition: transform 300ms var(--ease); }
+.evidence:hover { transform: rotate(0deg) scale(1.04); background: var(--cyan); color: var(--ground); }
+.evidence:hover .evidenceWord svg { transform: translate(3px, -3px); }
+.evidence:focus-visible { outline: 3px solid var(--acid); outline-offset: 4px; }
+
+/* ---------- The party ---------- */
+
+.floor[data-phase="party"] .bird { transform: rotate(-1deg) translateY(4%) scale(1.04); }
+.floor[data-phase="party"] .human { transform: rotate(1deg) translateY(-2%) scale(1.04); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .floor[data-phase="party"] .lights { animation: strobe 4s steps(8) infinite; }
+  .floor[data-phase="party"] .pair { animation: beat 500ms var(--ease) infinite; }
+  .floor[data-phase="party"] .amp { animation: spin 2s steps(4) infinite; }
+}
+@keyframes strobe {
+  to { filter: blur(8px) hue-rotate(360deg); }
+}
+@keyframes beat {
+  0% { transform: scale(1.025); }
+  100% { transform: scale(1); }
+}
+@keyframes spin {
+  to { transform: rotate(346deg); }
+}
+
+@media (min-width: 720px) {
+  .next { top: 28px; right: 32px; }
+  .exits { left: 32px; bottom: 22px; }
+}
+@media (max-width: 719px) {
+  /* Everything that matters fits the first screen of a phone. */
+  .floor { justify-content: flex-start; padding: calc(17vw + 14px) 16px calc(17vw + 12px); }
+  .pair { width: 100%; flex-direction: column; gap: 0; }
+  .panel { width: 88%; border-width: 4px; }
+  .bird, .floor[data-phase="party"] .bird { transform: rotate(-2deg); }
+  .human, .floor[data-phase="party"] .human { align-self: flex-end; transform: rotate(2deg); }
+  .tape { bottom: 8px; font-size: 1rem; }
+  .amp { display: none; }
+  .ampPhone {
+    display: block;
+    align-self: flex-end;
+    position: relative;
+    z-index: 2;
+    height: 0;
+    margin: 0 4vw 0 0;
+    font: 900 4.4rem/1 var(--lek-display), sans-serif;
+    color: var(--ember);
+    transform: translateY(-0.5em) rotate(-14deg);
+    text-shadow: 0 6px 16px rgb(0 0 0 / 0.55);
+    pointer-events: none;
+  }
+  .dock {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "btn ev" "btn next";
+    align-items: center;
+    column-gap: 16px;
+    row-gap: 12px;
+    width: 100%;
+    margin-top: 22px;
+  }
+  .console { grid-area: btn; margin-top: 0; }
+  .housing { width: 138px; border-radius: 18px; }
+  .dome { transform: translateY(-10px); box-shadow: 0 10px 0 0 #1c0003, 0 16px 16px 1px rgb(0 0 0 / 0.55); }
+  .domeText { font-size: 1.6rem; }
+  .exits { grid-area: ev; position: static; align-self: end; }
+  .evidence { padding: 8px 12px 8px 12px; }
+  .caseLine { font-size: 9.5px; letter-spacing: 0.12em; }
+  .evidenceWord { font-size: clamp(1.15rem, 5.6vw, 1.5rem); gap: 6px; white-space: nowrap; }
+  .next { grid-area: next; position: static; justify-self: start; align-self: start; font-size: 1.2rem; padding: 6px 12px 5px 14px; }
+  .pending { font-size: 10px; max-width: 140px; text-align: center; }
+}
+

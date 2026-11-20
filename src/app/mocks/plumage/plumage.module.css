@@ -1,0 +1,279 @@
+/* Mock B · PLUMAGE. The page is drenched in the bird's own colour. Two eyespots
+   hold the two dancers; the wordmark melts as the party runs. */
+
+.plate {
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  padding: 72px 16px 0;
+  overflow: hidden;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--pl-ui), system-ui, sans-serif;
+  transition: background-color 700ms var(--ease);
+}
+.plate ::selection { background: var(--ink); color: var(--ground); }
+
+/* ---------- The eyespots ---------- */
+
+.eyes {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5%;
+  width: min(980px, 100%);
+  margin: 0 auto;
+  padding-bottom: clamp(70px, 9vw, 110px);
+}
+.eye {
+  position: relative;
+  width: 44%;
+  aspect-ratio: 1;
+  transition: transform 1100ms var(--ease);
+}
+.left { transform: translate(-1%, 5%); }
+.right { transform: translate(1%, -5%); }
+
+.iris {
+  --veil: color-mix(in oklab, var(--ground), black 72%);
+  position: absolute !important;
+  inset: 11%;
+  border-radius: 50%;
+  background: var(--veil);
+  box-shadow:
+    0 0 0 clamp(6px, 1vw, 12px) var(--accent),
+    0 40px 70px -24px rgb(0 0 0 / 0.55);
+  transition: transform 1100ms var(--ease);
+}
+.iris :global(.well-host iframe) {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  width: auto;
+  aspect-ratio: 16 / 9;
+  transform: translateX(-50%);
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: var(--ink);
+  font: 800 9.5px var(--pl-ui), sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.offsite {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.offsite:hover { color: var(--ground); background: var(--accent); }
+.offsite:focus-visible { outline: 3px solid var(--accent); outline-offset: -8px; }
+
+/* ---------- The button ---------- */
+
+.panic {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: 3;
+  transform: translateX(-50%);
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font: inherit;
+  color: var(--ink);
+}
+.panic:disabled { cursor: not-allowed; opacity: 0.5; }
+.panic:focus-visible { outline: none; }
+.panic:focus-visible .pedestal { outline: 4px solid var(--ink); outline-offset: 6px; }
+
+.pedestal {
+  position: relative;
+  width: clamp(124px, 14vw, 180px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, color-mix(in oklab, var(--ink), white 18%), var(--ink) 70%);
+  box-shadow:
+    0 26px 40px -12px rgb(0 0 0 / 0.6),
+    0 0 0 clamp(5px, 0.7vw, 8px) var(--ground),
+    0 0 0 clamp(8px, 1.1vw, 13px) var(--ink);
+}
+.dome {
+  position: absolute;
+  inset: 13%;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(
+    circle at 36% 30%,
+    color-mix(in oklab, var(--dome), white 60%) 0,
+    var(--dome) 30%,
+    color-mix(in oklab, var(--dome), black 38%) 100%
+  );
+  transform: translateY(-12px);
+  box-shadow:
+    0 12px 0 0 color-mix(in oklab, var(--dome), black 58%),
+    0 20px 20px rgb(0 0 0 / 0.45);
+  transition: transform 160ms var(--ease), box-shadow 160ms var(--ease), filter 200ms;
+}
+.dome::after {
+  content: "";
+  position: absolute;
+  top: 8%;
+  left: 20%;
+  width: 44%;
+  height: 24%;
+  border-radius: 50%;
+  background: linear-gradient(rgb(255 255 255 / 0.7), rgb(255 255 255 / 0));
+  transform: rotate(-18deg);
+}
+.dome span {
+  position: relative;
+  z-index: 1;
+  font-family: var(--pl-display), sans-serif;
+  font-size: clamp(1.9rem, 3.4vw, 2.8rem);
+  line-height: 1;
+  color: var(--dome-ink);
+  font-variant-numeric: tabular-nums;
+}
+.panic:hover:not(:disabled) .dome { filter: brightness(1.1); }
+.panic:active:not(:disabled) .dome,
+.plate[data-phase="party"] .dome {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 0 0 color-mix(in oklab, var(--dome), black 58%), 0 6px 8px rgb(0 0 0 / 0.4);
+}
+.label {
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ---------- Wordmark ---------- */
+
+.word {
+  margin: 0 -0.04em -0.08em;
+  font-family: var(--pl-display), sans-serif;
+  font-weight: 400;
+  font-size: clamp(2.2rem, 6.4vw, 8rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  transition: font-variation-settings 200ms linear;
+}
+
+.pending {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(3.6rem, 9vw, 10rem);
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ---------- Chrome ---------- */
+
+.swatches {
+  position: absolute;
+  top: 22px;
+  left: 16px;
+  z-index: 4;
+  display: flex;
+  gap: 10px;
+}
+.swatches button {
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: radial-gradient(circle, var(--sw2) 0 26%, var(--sw) 29%);
+  cursor: pointer;
+  transition: transform 300ms var(--ease);
+}
+.swatches button:hover { transform: scale(1.12); }
+.swatches button[aria-current] { box-shadow: 0 0 0 3px var(--ground), 0 0 0 5px var(--ink); }
+.swatches button:focus-visible { outline: 3px solid var(--ink); outline-offset: 5px; }
+
+.dossier {
+  position: absolute;
+  top: 26px;
+  right: 16px;
+  z-index: 4;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.dossier:hover { text-decoration: underline; text-underline-offset: 4px; }
+.dossier:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+
+/* ---------- The party ---------- */
+
+.plate[data-phase="party"] .left { transform: translate(1%, 0) scale(1.05); }
+.plate[data-phase="party"] .right { transform: translate(-1%, 0) scale(1.05); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .ring { animation: turn 60s linear infinite; }
+  .right .ring { animation-direction: reverse; }
+  .plate[data-phase="party"] .ring { animation-duration: 6s; }
+  .plate[data-phase="party"] .iris { animation: throb 500ms var(--ease) infinite; }
+  .plate[data-phase="party"] .right .iris { animation-delay: 250ms; }
+}
+@keyframes turn { to { transform: rotate(360deg); } }
+@keyframes throb {
+  0% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+@media (min-width: 720px) {
+  .swatches { top: 28px; left: 32px; }
+  .dossier { top: 34px; right: 32px; }
+}
+@media (max-width: 719px) {
+  .plate { padding-top: 84px; }
+  .eyes { flex-direction: column; gap: 0; padding: 0 14px; }
+  .eye { width: 68%; }
+  .left, .plate[data-phase="party"] .left { align-self: flex-start; transform: none; }
+  .right, .plate[data-phase="party"] .right { align-self: flex-end; transform: none; margin-top: -2%; }
+  .ring { font-size: 11px; }
+  .panic { position: relative; left: auto; transform: none; margin: -40px auto 24px; }
+  .word { white-space: normal; font-size: 10.6vw; line-height: 0.9; text-align: left; margin: 0 -0.04em -0.06em; }
+}

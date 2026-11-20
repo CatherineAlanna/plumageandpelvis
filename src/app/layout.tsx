@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow, Barlow_Condensed, IBM_Plex_Mono, Source_Serif_4 } from "next/font/google";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
 import "./globals.css";
 
 const barlowCondensed = Barlow_Condensed({
@@ -59,12 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${barlowCondensed.variable} ${barlow.variable} ${sourceSerif.variable} ${plexMono.variable}`}
     >
-      <body>
-        <a href="#main" className="skip-link">Skip to content</a>
-        <SiteHeader />
-        <main id="main">{children}</main>
-        <SiteFooter />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
