@@ -132,6 +132,10 @@
 
 /* ---------- The button ---------- */
 
+/* On wide screens the dock is invisible and its parts float on the floor;
+   on phones it becomes the row under the videos. */
+.dock { display: contents; }
+
 .console {
   position: relative;
   z-index: 3;
@@ -370,29 +374,46 @@
   .exits { left: 32px; bottom: 22px; }
 }
 @media (max-width: 719px) {
-  .floor { padding: 110px 16px 150px; }
-  .pair { width: 100%; flex-direction: column; gap: 6px; }
-  .panel { width: 90%; border-width: 4px; }
+  /* Everything that matters fits the first screen of a phone. */
+  .floor { justify-content: flex-start; padding: calc(17vw + 14px) 16px calc(17vw + 12px); }
+  .pair { width: 100%; flex-direction: column; gap: 0; }
+  .panel { width: 88%; border-width: 4px; }
   .bird, .floor[data-phase="party"] .bird { transform: rotate(-2deg); }
   .human, .floor[data-phase="party"] .human { align-self: flex-end; transform: rotate(2deg); }
-  .tape { bottom: 10px; }
+  .tape { bottom: 8px; font-size: 1rem; }
   .amp { display: none; }
   .ampPhone {
     display: block;
     align-self: flex-end;
     position: relative;
     z-index: 2;
-    margin: 0 5vw 0 0;
-    font: 900 4rem/0.95 var(--lek-display), sans-serif;
+    height: 0;
+    margin: 0 4vw 0 0;
+    font: 900 4.4rem/1 var(--lek-display), sans-serif;
     color: var(--ember);
-    transform: rotate(-14deg);
+    transform: translateY(-0.5em) rotate(-14deg);
+    text-shadow: 0 6px 16px rgb(0 0 0 / 0.55);
     pointer-events: none;
   }
-  .console { margin-top: 28px; }
-  .housing { width: 118px; border-radius: 16px; }
-  .dome { transform: translateY(-9px); box-shadow: 0 9px 0 0 #1c0003, 0 14px 14px 1px rgb(0 0 0 / 0.55); }
-  .domeText { font-size: 1.35rem; }
-  .next { top: auto; right: auto; bottom: 20px; left: 16px; }
-  .exits { bottom: 84px; }
-  .floor { padding-bottom: 230px; }
+  .dock {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "btn ev" "btn next";
+    align-items: center;
+    column-gap: 16px;
+    row-gap: 12px;
+    width: 100%;
+    margin-top: 22px;
+  }
+  .console { grid-area: btn; margin-top: 0; }
+  .housing { width: 138px; border-radius: 18px; }
+  .dome { transform: translateY(-10px); box-shadow: 0 10px 0 0 #1c0003, 0 16px 16px 1px rgb(0 0 0 / 0.55); }
+  .domeText { font-size: 1.6rem; }
+  .exits { grid-area: ev; position: static; align-self: end; }
+  .evidence { padding: 8px 12px 8px 12px; }
+  .caseLine { font-size: 9.5px; letter-spacing: 0.12em; }
+  .evidenceWord { font-size: clamp(1.15rem, 5.6vw, 1.5rem); gap: 6px; white-space: nowrap; }
+  .next { grid-area: next; position: static; justify-self: start; align-self: start; font-size: 1.2rem; padding: 6px 12px 5px 14px; }
+  .pending { font-size: 10px; max-width: 140px; text-align: center; }
 }
+

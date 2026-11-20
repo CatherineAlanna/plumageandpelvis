@@ -12,6 +12,9 @@ import s from "./lek.module.css";
  *  product name, so the button says something of our own. */
 const PAINTED = "Strut";
 
+/** Hidden for now; flip to true to bring the archive link back. */
+const SHOW_ARCHIVE_LINK = false;
+
 function Floor({ exhibit, children }: { exhibit: Exhibit; children: React.ReactNode }) {
   const b = bill(exhibit);
   const { birdHost, humanHost, phase, remaining, canParty, toggle } = useDanceParty(exhibit);
@@ -47,6 +50,7 @@ function Floor({ exhibit, children }: { exhibit: Exhibit; children: React.ReactN
         </Well>
       </div>
 
+      <div className={s.dock}>
       <div className={s.console}>
         <button
           type="button"
@@ -67,6 +71,7 @@ function Floor({ exhibit, children }: { exhibit: Exhibit; children: React.ReactN
       </div>
 
       {children}
+      </div>
     </div>
   );
 }
@@ -129,9 +134,11 @@ export function Lek() {
               The evidence <ArrowOut size={22} />
             </span>
           </Link>
-          <Link className={s.dossier} href="/archive">
-            The archive <ArrowOut />
-          </Link>
+          {SHOW_ARCHIVE_LINK && (
+            <Link className={s.dossier} href="/archive">
+              The archive <ArrowOut />
+            </Link>
+          )}
         </nav>
       </Floor>
     </div>
