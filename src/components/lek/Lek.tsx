@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { cast, bill } from "@/mocks/cast";
 import { useDanceParty, youTubePoster } from "@/mocks/useDanceParty";
@@ -70,19 +70,57 @@ function Floor({ exhibit, children }: { exhibit: Exhibit; children: React.ReactN
   );
 }
 
+function shuffled(n: number): number[] {
+  const a = Array.from({ length: n }, (_, k) => k);
+  for (let k = n - 1; k > 0; k--) {
+    const j = Math.floor(Math.random() * (k + 1));
+    [a[k], a[j]] = [a[j], a[k]];
+  }
+  return a;
+}
+
+function NextIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 5l10 7-10 7z" fill="currentColor" />
+      <rect x="16" y="5" width="3.5" height="14" fill="currentColor" />
+    </svg>
+  );
+}
+
+/** The homepage: one random pairing per visit, then Next deals the rest
+ *  in a shuffled order before any pairing repeats. */
 export function Lek() {
-  const [i, setI] = useState(0);
-  const exhibit = cast[i];
+  const [deck, setDeck] = useState<number[]>(() => cast.map((_, k) => k));
+  const [pos, setPos] = useState(0);
+  useEffect(() => {
+    setDeck(shuffled(cast.length));
+  }, []);
+  const exhibit = cast[deck[pos]];
+
+  const next = () => {
+    if (pos + 1 < deck.length) {
+      setPos(pos + 1);
+    } else {
+      // New shuffle, never opening on the pairing just shown.
+      let d = shuffled(cast.length);
+      if (d.length > 1 && d[0] === deck[pos]) d = [...d.slice(1), d[0]];
+      setDeck(d);
+      setPos(0);
+    }
+  };
+
   return (
     <div className={s.root}>
       <Floor key={exhibit.id} exhibit={exhibit}>
-        <nav className={s.lineup} aria-label="Choose a pairing">
-          {cast.map((e, n) => (
-            <button key={e.id} type="button" aria-current={n === i || undefined} onClick={() => setI(n)}>
-              {bill(e).bird}
-            </button>
-          ))}
-        </nav>
+        {cast.length > 1 && (
+          <button type="button" className={s.next} onClick={next} aria-label="Next pairing">
+            Next <NextIcon />
+          </button>
+        )}
+        <p className="mock-sr" aria-live="polite">
+          Now showing {exhibit.bird.species} and {exhibit.human.performer}
+        </p>
         <nav className={s.exits} aria-label="Site">
           <Link className={s.dossier} href={`/archive/${exhibit.slug}`}>
             The evidence <ArrowOut />

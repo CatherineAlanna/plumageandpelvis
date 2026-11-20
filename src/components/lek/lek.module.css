@@ -258,16 +258,32 @@
 
 /* ---------- Chrome ---------- */
 
-.lineup {
+.next {
   position: absolute;
-  top: 20px;
+  top: 18px;
   right: 16px;
   z-index: 4;
-  display: grid;
-  justify-items: end;
-  gap: 2px;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 6px 16px;
+  background: var(--ground);
+  border: 3px solid var(--acid);
+  border-radius: 999px;
+  color: var(--acid);
+  font: 900 clamp(1.3rem, 1.8vw, 1.6rem)/1 var(--lek-display), sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 200ms var(--ease), color 200ms var(--ease), transform 200ms var(--ease);
 }
-.lineup button,
+.next:hover { background: var(--acid); color: var(--ground); }
+.next:active { transform: translateY(2px); }
+.next:focus-visible { outline: 3px solid var(--cyan); outline-offset: 4px; }
+.next svg { transition: transform 300ms var(--ease); }
+.next:hover svg { transform: translateX(3px); }
+
 .dossier {
   appearance: none;
   background: none;
@@ -283,17 +299,7 @@
   gap: 8px;
   align-items: center;
 }
-.lineup button:hover,
 .dossier:hover { color: var(--white); }
-.lineup button[aria-current] { color: var(--acid); }
-.lineup button[aria-current]::after {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--acid);
-}
-.lineup button:focus-visible,
 .dossier:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
 .dossier { color: var(--white); }
 .exits {
@@ -328,7 +334,7 @@
 }
 
 @media (min-width: 720px) {
-  .lineup { top: 28px; right: 32px; }
+  .next { top: 28px; right: 32px; }
   .exits { left: 32px; bottom: 22px; }
 }
 @media (max-width: 719px) {
@@ -339,8 +345,7 @@
   .human, .floor[data-phase="party"] .human { align-self: flex-end; transform: rotate(2deg); }
   .tape { bottom: 10px; }
   .amp { top: 9%; left: auto; right: 6vw; margin: 0; font-size: 4.5rem; }
-  .lineup { top: auto; right: auto; bottom: 18px; left: 16px; justify-items: start; }
-  .lineup button[aria-current]::after { order: -1; }
-  .exits { bottom: 104px; }
+  .next { top: auto; right: auto; bottom: 20px; left: 16px; }
+  .exits { bottom: 84px; }
   .floor { padding-bottom: 180px; }
 }
