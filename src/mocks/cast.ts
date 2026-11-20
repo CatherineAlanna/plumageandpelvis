@@ -21,6 +21,17 @@ export const billing: Record<string, Billing> = {
 
 export const cast: Exhibit[] = exhibits;
 
+const lastWord = (s: string) => s.trim().split(/\s+/).pop() ?? s;
+
+/** Billing for an exhibit. New exhibits work without an entry above: the
+ *  names come from the data (last word of species and performer) and the
+ *  colours fall back to the grouse palette until someone picks their own. */
 export function bill(e: Exhibit): Billing {
-  return billing[e.slug];
+  return (
+    billing[e.slug] ?? {
+      ...billing["the-chest-thruster"],
+      bird: lastWord(e.bird.species),
+      human: lastWord(e.human.performer),
+    }
+  );
 }

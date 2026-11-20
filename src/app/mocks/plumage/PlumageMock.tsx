@@ -48,8 +48,8 @@ function Plate({ exhibit, children }: { exhibit: Exhibit; children: React.ReactN
           "--ground": b.ground,
           "--accent": b.accent,
           "--ink": b.ink,
-          "--dome": DOME[exhibit.slug][0],
-          "--dome-ink": DOME[exhibit.slug][1],
+          "--dome": (DOME[exhibit.slug] ?? DOME["the-chest-thruster"])[0],
+          "--dome-ink": (DOME[exhibit.slug] ?? DOME["the-chest-thruster"])[1],
         } as React.CSSProperties
       }
     >
