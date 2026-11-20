@@ -323,12 +323,13 @@
 .evidence {
   display: grid;
   gap: 4px;
-  padding: 10px 18px 10px 16px;
-  background: var(--cyan);
-  color: var(--ground);
+  padding: 8px 16px 8px 14px;
+  /* Secondary to STRUT: an outline, not a fill. It fills on hover. */
+  background: rgb(14 7 22 / 0.72);
+  border: 2px solid var(--cyan);
+  color: var(--cyan);
   text-decoration: none;
   transform: rotate(-2.5deg);
-  box-shadow: 0 18px 30px -12px rgb(0 0 0 / 0.7);
   transition: transform 300ms var(--ease), background-color 200ms var(--ease);
 }
 .caseLine {
@@ -344,7 +345,7 @@
   text-transform: uppercase;
 }
 .evidenceWord svg { transition: transform 300ms var(--ease); }
-.evidence:hover { transform: rotate(0deg) scale(1.04); background: var(--white); }
+.evidence:hover { transform: rotate(0deg) scale(1.04); background: var(--cyan); color: var(--ground); }
 .evidence:hover .evidenceWord svg { transform: translate(3px, -3px); }
 .evidence:focus-visible { outline: 3px solid var(--acid); outline-offset: 4px; }
 
