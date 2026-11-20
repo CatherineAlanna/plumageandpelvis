@@ -8,6 +8,10 @@ import { Well, ArrowOut, fmtClock } from "@/mocks/Well";
 import type { Exhibit } from "@/data/types";
 import s from "./lek.module.css";
 
+/** The word painted on the dome. "30 Second Dance Party" is a trademarked
+ *  product name, so the button says something of our own. */
+const PAINTED = "Strut";
+
 function Floor({ exhibit, children }: { exhibit: Exhibit; children: React.ReactNode }) {
   const b = bill(exhibit);
   const { birdHost, humanHost, phase, remaining, canParty, toggle } = useDanceParty(exhibit);
@@ -49,22 +53,13 @@ function Floor({ exhibit, children }: { exhibit: Exhibit; children: React.ReactN
           onClick={toggle}
           disabled={!canParty}
           aria-pressed={phase !== "idle"}
+          aria-label={phase === "idle" ? `${PAINTED}: play both dances together for 30 seconds` : "Stop"}
+          title={phase === "idle" ? "Both dances, his music, 30 seconds" : "Stop"}
         >
           <span className={s.housing} aria-hidden="true">
             <span className={s.dome}>
-              <span className={s.domeText}>{live ? fmtClock(remaining) : phase === "cueing" ? "…" : ""}</span>
+              <span className={s.domeText}>{live ? fmtClock(remaining) : phase === "cueing" ? "…" : PAINTED}</span>
             </span>
-          </span>
-          <span className={s.label}>
-            {phase === "idle" ? (
-              <>
-                30 second
-                <br />
-                dance party
-              </>
-            ) : (
-              "Stop the party"
-            )}
           </span>
         </button>
         {!canParty && <p className={s.pending}>Music clip not cleared yet</p>}

@@ -6,6 +6,7 @@
   --acid: #c8ff2e;
   --mag: #ff2e9a;
   --cyan: #22e4ff;
+  --ember: #ff6a1a;
   --white: #fff6fb;
   --veil: #1b0d24;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -63,10 +64,11 @@
 .bottom { bottom: -0.12em; right: -0.03em; color: var(--mag); }
 .amp {
   position: absolute;
-  top: 46%;
-  left: 3vw;
+  top: 30%;
+  left: 50%;
+  margin-left: -0.3em;
   font-size: clamp(3rem, 11vw, 10rem);
-  color: var(--cyan);
+  color: var(--ember);
   transform: rotate(-14deg);
 }
 
@@ -76,28 +78,21 @@
   position: relative;
   z-index: 1;
   display: flex;
-  justify-content: center;
-  width: min(880px, 94vw);
+  justify-content: space-between;
+  align-items: flex-start;
+  width: min(1280px, 94vw);
 }
 .panel {
-  width: 47%;
-  aspect-ratio: 5 / 6;
+  width: 45.5%;
+  aspect-ratio: 16 / 9;
   background: #000;
   border: 6px solid;
   box-shadow: 0 32px 60px -12px rgb(0 0 0 / 0.75);
   transition: transform 900ms var(--ease);
 }
-.panel :global(.well-host iframe) {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  height: 100%;
-  width: auto;
-  aspect-ratio: 16 / 9;
-  transform: translateX(-50%);
-}
-.bird { border-color: var(--acid); transform: rotate(-5deg) translate(5%, 3%); }
-.human { border-color: var(--mag); transform: rotate(4deg) translate(-5%, -4%); }
+/* The whole frame shows: nothing of the dance is cropped. */
+.bird { border-color: var(--acid); transform: rotate(-3deg) translateY(10%); }
+.human { border-color: var(--mag); transform: rotate(2.5deg) translateY(-6%); }
 
 .tape {
   position: absolute;
@@ -185,10 +180,10 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at 36% 30%, #ff9b9b 0, #ff2b2b 24%, #c70014 62%, #7d000b 100%);
+  background: radial-gradient(circle at 36% 30%, #e0565c 0, #a8101c 26%, #6e0410 64%, #3d0007 100%);
   transform: translateY(-14px);
   box-shadow:
-    0 14px 0 0 #6a0009,
+    0 14px 0 0 #2e0005,
     0 22px 22px 2px rgb(0 0 0 / 0.55);
   transition: transform 160ms var(--ease), box-shadow 160ms var(--ease), filter 200ms;
 }
@@ -200,25 +195,46 @@
   width: 46%;
   height: 26%;
   border-radius: 50%;
-  background: linear-gradient(rgb(255 255 255 / 0.75), rgb(255 255 255 / 0));
+  z-index: 2;
+  background: linear-gradient(rgb(255 255 255 / 0.6), rgb(255 255 255 / 0));
   transform: rotate(-18deg);
+  pointer-events: none;
 }
 .panic:hover:not(:disabled) .dome { filter: brightness(1.12) saturate(1.1); }
 .panic:active:not(:disabled) .dome,
 .floor[data-phase="party"] .dome {
   transform: translateY(-4px);
-  box-shadow: 0 4px 0 0 #6a0009, 0 8px 10px rgb(0 0 0 / 0.5);
+  box-shadow: 0 4px 0 0 #2e0005, 0 8px 10px rgb(0 0 0 / 0.5);
 }
 .domeText {
+  /* Brush-painted onto the dome: bright signal red, wrapped to the curve,
+     with a dry-brush edge where the paint thins out. */
   position: relative;
   z-index: 1;
   font-family: var(--lek-display), sans-serif;
   font-weight: 900;
-  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-size: clamp(1.75rem, 2.9vw, 2.45rem);
   line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
   font-variant-numeric: tabular-nums;
-  color: var(--white);
-  text-shadow: 0 2px 0 rgb(0 0 0 / 0.35);
+  color: #ff2a1a;
+  transform: perspective(160px) rotateX(16deg) scaleX(1.06);
+  text-shadow:
+    0 1px 0 rgb(255 140 120 / 0.55),
+    0 -1px 0 rgb(40 0 0 / 0.5);
+  -webkit-mask-image:
+    radial-gradient(circle at 18% 30%, transparent 0 0.7px, #000 1.1px),
+    radial-gradient(circle at 64% 72%, transparent 0 0.5px, #000 0.9px),
+    linear-gradient(100deg, #000 0 88%, rgb(0 0 0 / 0.55) 96%);
+  -webkit-mask-size: 23px 17px, 29px 13px, 100% 100%;
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(circle at 18% 30%, transparent 0 0.7px, #000 1.1px),
+    radial-gradient(circle at 64% 72%, transparent 0 0.5px, #000 0.9px),
+    linear-gradient(100deg, #000 0 88%, rgb(0 0 0 / 0.55) 96%);
+  mask-size: 23px 17px, 29px 13px, 100% 100%;
+  mask-composite: intersect;
 }
 
 .label {
@@ -289,8 +305,8 @@
 
 /* ---------- The party ---------- */
 
-.floor[data-phase="party"] .bird { transform: rotate(-1deg) translate(2%, 0) scale(1.04); }
-.floor[data-phase="party"] .human { transform: rotate(1deg) translate(-2%, 0) scale(1.04); }
+.floor[data-phase="party"] .bird { transform: rotate(-1deg) translateY(4%) scale(1.04); }
+.floor[data-phase="party"] .human { transform: rotate(1deg) translateY(-2%) scale(1.04); }
 
 @media (prefers-reduced-motion: no-preference) {
   .floor[data-phase="party"] .lights { animation: strobe 4s steps(8) infinite; }
@@ -314,10 +330,12 @@
 }
 @media (max-width: 719px) {
   .floor { padding: 110px 16px 150px; }
-  .pair { width: 100%; }
-  .panel { width: 52%; aspect-ratio: 3 / 4; border-width: 4px; }
+  .pair { width: 100%; flex-direction: column; gap: 28px; }
+  .panel { width: 90%; border-width: 4px; }
+  .bird, .floor[data-phase="party"] .bird { transform: rotate(-2deg); }
+  .human, .floor[data-phase="party"] .human { align-self: flex-end; transform: rotate(2deg); }
   .tape { bottom: 10px; }
-  .amp { top: 30%; }
+  .amp { top: 9%; left: auto; right: 6vw; margin: 0; font-size: 4.5rem; }
   .lineup { top: auto; right: auto; bottom: 18px; left: 16px; justify-items: start; }
   .lineup button[aria-current]::after { order: -1; }
   .dossier { bottom: 104px; }
